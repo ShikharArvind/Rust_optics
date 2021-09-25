@@ -1,6 +1,6 @@
 // Learning Rust and Fourier Optics :)
-// This is basic implementation of a 1D rectangular function with it Fourier Transform
-// Refer Computation Fourier Optics by Davis Volez - Chap 3, section 3.2
+// This is basic implementation of a 1D rectangular function with its Fourier Transform
+// Refer Computational Fourier Optics by Davis Volez - Chap 3, section 3.2
 use ndarray::prelude::*;
 use ndrustfft::*;
 
