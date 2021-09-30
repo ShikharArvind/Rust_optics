@@ -55,20 +55,3 @@ pub fn propTF(u1: &Array2<Complex64>, l: &f64, lam: &f64, z: &f64) -> Array2<Com
         .into_dimensionality()
         .unwrap();
 }
-// def propTF(u1, L, lam, z):
-//     # Fresnel propagation - transfer function approach (dx=dy)
-//     # u1 - source plane field
-//     # L = L1 = L2 - source and observation plane side length
-//     # z - propagation distance
-//     # lam - wavelength of light
-//     N, M = np.shape(u1)
-//     dx = L / M  # Assumed (dx=dy)
-//     fx = np.arange(start=-1 / (2 * dx), stop=1 / (2 * dx), step=1 / L)
-//     k = (2 * np.pi) / (lam)
-//     mesh_fx, mesh_fy = np.meshgrid(fx, fx)  # instead of creating fx = fy
-//     H = (np.exp(1j * k * z)) * (np.exp(-1 * 1j * np.pi * lam * z * (mesh_fx ** 2 + mesh_fy ** 2)))
-//     H_shifted = ft.fftshift(H)  # shifted transfer function
-//     ft_u1 = ft.fft2(ft.fftshift(u1))  # shifted, fourier transformed source function u1
-//     ft_u2 = ft_u1 * H_shifted  # Fourier transform of u2, shifted
-//     u2 = ft.ifftshift(ft.ifft2(ft_u2))  # Inverse transform ft_u2 and inv shift
-//     return u2
