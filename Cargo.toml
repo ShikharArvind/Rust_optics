@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 ndarray = "0.15.0"
 ndrustfft = "0.2.1"
+num-complex = "0.4"

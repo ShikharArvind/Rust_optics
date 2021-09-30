@@ -183,6 +183,7 @@ version = "0.1.0"
 dependencies = [
  "ndarray",
  "ndrustfft",
+ "num-complex 0.4.0",
 ]
 
 [[package]]
