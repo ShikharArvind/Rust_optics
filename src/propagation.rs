@@ -1,4 +1,4 @@
-use super::fftshift;
+use super::fft::{fftn, fftshift, ifftn, ifftshift};
 use super::meshgrid;
 use ndarray::prelude::*;
 use ndrustfft::*;
@@ -27,31 +27,7 @@ pub fn propTF(u1: &Array2<Complex64>, l: &f64, lam: &f64, z: &f64) -> Array2<Com
                 + mesh_fy.mapv(|y| Complex64::new(y.powi(2), 0.0))))
         .mapv(|a| a.exp());
 
-    //FT(FTSHIFT(u1))-> FT_along_axis_1(FT_along_axis_0(FTSHIFT(u1)))
-    //There should be a cleaner way to implement (TODO)
-    let shift_u1 = fftshift::fftshiftgen(&(u1_.into_dyn()));
-    let mut fftx_u1 = ArrayD::<Complex64>::zeros(shift_u1.shape());
-    let mut handler = FftHandler::new(shift_u1.len_of(Axis(0)));
-    ndfft(&shift_u1, &mut fftx_u1, &mut handler, 0);
-    handler = FftHandler::new(shift_u1.len_of(Axis(1)));
-    let mut ffty_u1 = ArrayD::<Complex64>::zeros(fftx_u1.shape());
-    ndfft(&fftx_u1, &mut ffty_u1, &mut handler, 1);
-    let fft_f1 = ffty_u1;
-
-    // FT(u2) =  FT(FTSHIFT(u1)) * FTSHIFT(H)
-    let ft_u2 = fft_f1 * fftshift::fftshiftgen(&(H.into_dyn()));
-
-    // u2 = IFFTSHIFT(FT_along_axis_1(FT_along_axis_0(ft_u1)))
-    // There should be a cleaner way to implement (TODO)
-    handler = FftHandler::new(ft_u2.len_of(Axis(0)));
-    let mut ifftx_u2 = ArrayD::<Complex64>::zeros(ft_u2.shape());
-    ndifft(&ft_u2, &mut ifftx_u2, &mut handler, 0);
-    handler = FftHandler::new(ifftx_u2.len_of(Axis(1)));
-    let mut iffty_u2 = ArrayD::<Complex64>::zeros(ifftx_u2.shape());
-    ndifft(&mut ifftx_u2, &mut iffty_u2, &mut handler, 1);
-    let ifft_u2 = iffty_u2;
-
-    return fftshift::ifftshiftgen(&ifft_u2)
-        .into_dimensionality()
-        .unwrap();
+    let fft_f1 = fftn(&fftshift(&(u1_.into_dyn())));
+    let ft_u2 = fft_f1 * fftshift(&(H.into_dyn()));
+    return ifftshift(&ifftn(&ft_u2)).into_dimensionality().unwrap();
 }
