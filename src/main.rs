@@ -1,14 +1,13 @@
 // Learning Rust and Fourier Optics :)
 // Refer Computational Fourier Optics by Davis Volez
+
 use ndarray::prelude::*;
 use num_complex::Complex64;
-use std::fs::File;
-use std::io::*;
 pub mod apertures;
 pub mod fft;
 pub mod meshgrid;
 pub mod propagation;
-
+pub mod writer;
 fn main() {
     //Simple rectangular 1d function and it Fourier transform
     // let w: f64 = 0.055;
@@ -56,40 +55,21 @@ fn main() {
     // println!("{}", arr_test_x);
     // println!("{}", arr_test_y);
 
-    // //Fresnel Propagation of square (Chapter 5, Section 5.1)
-    // let w: f64 = 0.011;
-    // let z: f64 = 2000.0;
-    // let l: f64 = 0.5;
-    // let m: f64 = 250.0;
-    // let dx: f64 = l / m;
-    // let lam: f64 = 0.5e-06;
-    // let x1 = Array::range(-l / 2.0, l / 2.0, dx);
-    // let (X1, Y1) = meshgrid::meshgrid(&x1, &x1);
-    // let u1 = X1.mapv(|x| apertures::rect_1d(x / (2.0 * w)))
-    //     * Y1.mapv(|y| apertures::rect_1d(y / (2.0 * w)));
-    // let mut u2 = propagation::propTF(&u1, &l, &lam, &z);
-    // u2.map_inplace(|a| nan_to_zero(a)); // Replace NaN with zeros
-    //
-    // //Print u2 out to file so that numpy.genfromtxt can read
-    // //
-    // let mut f = File::create("output.txt").expect("Unable to create file");
-    // write!(f, "[");
-    // for i in 0..u2.len_of(Axis(0)) {
-    //     write!(f, "[");
-    //     for iter in u2.index_axis(Axis(1), i).indexed_iter() {
-    //         if iter.0 == u2.len_of(Axis(1)) - 1 {
-    //             write!(f, "{}", *(iter.1));
-    //         } else {
-    //             write!(f, "{},", *(iter.1));
-    //         }
-    //     }
-    //     if i == u2.len_of(Axis(0)) - 1 {
-    //         write!(f, "]");
-    //     } else {
-    //         writeln!(f, "]");
-    //     }
-    // }
-    // write!(f, "]");
+    //Fresnel Propagation of square (Chapter 5, Section 5.1)
+    let w: f64 = 0.011;
+    let z: f64 = 2000.0;
+    let l: f64 = 0.5;
+    let m: f64 = 250.0;
+    let dx: f64 = l / m;
+    let lam: f64 = 0.5e-06;
+    let x1 = Array::range(-l / 2.0, l / 2.0, dx);
+    let (X1, Y1) = meshgrid::meshgrid(&x1, &x1);
+    let u1 = X1.mapv(|x| apertures::rect_1d(x / (2.0 * w)))
+        * Y1.mapv(|y| apertures::rect_1d(y / (2.0 * w)));
+    let mut u2 = propagation::propTF(&u1, &l, &lam, &z);
+    u2.map_inplace(|a| nan_to_zero(a)); // Replace NaN with zeros
+    let filename = String::from("output.txt");
+    writer::writer2d(&filename, &u2);
 }
 
 fn nan_to_zero(x: &mut Complex64) {
