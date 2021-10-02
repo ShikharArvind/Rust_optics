@@ -7,19 +7,19 @@ pub fn fftshift<T: std::clone::Clone>(x: &ArrayD<T>) -> ArrayD<T> {
     //General FFTSHIFT function for n dimensions, required ArrayD hence array_input.into_dyn() necessary
 
     // For first Axis i.e. Axis(0)
-    let mut n = (*x).len_of(Axis(0)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
+    let mut n = x.len_of(Axis(0)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
     let mut n_div_2 = (f64::from(n) / 2.0).ceil() as i32; // Ceil of n/2 works for both odd and even n
     let mut slice_1 = Slice::from(n_div_2..n);
     let mut slice_2 = Slice::from(0..n_div_2);
     let mut arr = concatenate![
         Axis(0),
-        (*x).slice_axis(Axis(0), slice_1),
-        (*x).slice_axis(Axis(0), slice_2)
+        x.slice_axis(Axis(0), slice_1),
+        x.slice_axis(Axis(0), slice_2)
     ];
     // For rest of the Axes
-    if (*x).ndim() >= 1 {
-        for i in 1..(*x).ndim() {
-            n = (*x).len_of(Axis(i)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
+    if x.ndim() >= 1 {
+        for i in 1..x.ndim() {
+            n = x.len_of(Axis(i)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
             n_div_2 = (f64::from(n) / 2.0).ceil() as i32; // Ceil of n/2 works for both odd and even n
             slice_1 = Slice::from(n_div_2..n);
             slice_2 = Slice::from(0..n_div_2);
@@ -38,19 +38,19 @@ pub fn ifftshift<T: std::clone::Clone>(x: &ArrayD<T>) -> ArrayD<T> {
     //General IFFTSHIFT function for n dimensions, required ArrayD hence &(array_input.into_dyn()) necessary
 
     // For first Axis i.e. Axis(0)
-    let mut n = (*x).len_of(Axis(0)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
+    let mut n = x.len_of(Axis(0)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
     let mut n_div_2 = (f64::from(n) / 2.0).floor() as i32; // Floor of n/2 works for both odd and even n
     let mut slice_1 = Slice::from(n_div_2..n);
     let mut slice_2 = Slice::from(0..n_div_2);
     let mut arr = concatenate![
         Axis(0),
-        (*x).slice_axis(Axis(0), slice_1),
-        (*x).slice_axis(Axis(0), slice_2)
+        x.slice_axis(Axis(0), slice_1),
+        x.slice_axis(Axis(0), slice_2)
     ];
     // For rest of the Axes
-    if (*x).ndim() >= 1 {
-        for i in 1..(*x).ndim() {
-            n = (*x).len_of(Axis(i)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
+    if x.ndim() >= 1 {
+        for i in 1..x.ndim() {
+            n = x.len_of(Axis(i)) as i32; // Casting usize (u64) to i32 , array sizes are limited to isize::MAX anyway
             n_div_2 = (f64::from(n) / 2.0).floor() as i32; // Floor of n/2 works for both odd and even n
             slice_1 = Slice::from(n_div_2..n);
             slice_2 = Slice::from(0..n_div_2);
@@ -66,7 +66,7 @@ pub fn ifftshift<T: std::clone::Clone>(x: &ArrayD<T>) -> ArrayD<T> {
 
 pub fn fftn(input: &ArrayD<Complex64>) -> ArrayD<Complex64> {
     //For now its only 2D but plan on implementing for n dimensions hence ArrayD used
-    let mut ft_along_axis_0 = ArrayD::<Complex64>::zeros((*input).raw_dim());
+    let mut ft_along_axis_0 = ArrayD::<Complex64>::zeros(input.raw_dim());
     let mut handler = FftHandler::new(ft_along_axis_0.len_of(Axis(0)));
     ndfft(&input, &mut ft_along_axis_0, &mut handler, 0);
     handler = FftHandler::new(ft_along_axis_0.len_of(Axis(1)));
@@ -77,7 +77,7 @@ pub fn fftn(input: &ArrayD<Complex64>) -> ArrayD<Complex64> {
 
 pub fn ifftn(input: &ArrayD<Complex64>) -> ArrayD<Complex64> {
     //For now its only 2D but plan on implementing for n dimensions hence ArrayD used
-    let mut ift_along_axis_0 = ArrayD::<Complex64>::zeros((*input).raw_dim());
+    let mut ift_along_axis_0 = ArrayD::<Complex64>::zeros(input.raw_dim());
     let mut handler = FftHandler::new(ift_along_axis_0.len_of(Axis(0)));
     ndifft(&input, &mut ift_along_axis_0, &mut handler, 0);
     handler = FftHandler::new(ift_along_axis_0.len_of(Axis(1)));
