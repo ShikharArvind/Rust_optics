@@ -23,7 +23,7 @@ pub fn prop_fresnel_transfer_function(
     let k = (2.0 * PI) / wavelength;
     let (mesh_fx, mesh_fy) = meshgrid::meshgrid(&fx_range, &fx_range);
 
-    let H = (Complex64::i() * k * propagation_distance).exp()
+    let transfer_function = (Complex64::i() * k * propagation_distance).exp()
         * (-1.0
             * Complex64::i()
             * PI
@@ -34,6 +34,6 @@ pub fn prop_fresnel_transfer_function(
         .mapv(|a| a.exp());
 
     let fft_f1 = fftn(&fftshift(source));
-    let ft_u2 = fft_f1 * fftshift(&(H.into_dyn()));
+    let ft_u2 = fft_f1 * fftshift(&(transfer_function.into_dyn()));
     return ifftshift(&ifftn(&ft_u2)).into_dimensionality().unwrap();
 }

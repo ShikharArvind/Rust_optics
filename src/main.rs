@@ -69,7 +69,7 @@ fn main() {
     let mut u2 = propagation::prop_fresnel_transfer_function(&u1.into_dyn(), &l, &lam, &z);
     u2.map_inplace(|a| nan_to_zero(a)); // Replace NaN with zeros
     let filename = String::from("output.txt");
-    writer::writer2d(&filename, &u2);
+    writer::write_to_file(&filename, &u2);
 }
 
 fn nan_to_zero(x: &mut Complex64) {

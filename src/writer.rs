@@ -1,9 +1,8 @@
 use ndarray::prelude::*;
 use std::fs::File;
-use std::io::Write;
-
-pub fn writer2d<T: std::fmt::Display>(file_name: &String, input: &Array2<T>) {
-    let mut f = File::create(file_name).expect("Unable to create file");
+use std::io::{BufWriter, Write};
+pub fn write_to_file<T: std::fmt::Display>(file_name: &String, input: &Array2<T>) {
+    let mut f = BufWriter::new(File::create(file_name).expect("Unable to create file"));
 
     write!(f, "[").expect("Writing failed");
     for i in 0..(*input).len_of(Axis(0)) {
@@ -22,4 +21,5 @@ pub fn writer2d<T: std::fmt::Display>(file_name: &String, input: &Array2<T>) {
         }
     }
     write!(f, "]").expect("Writing failed");
+    f.flush().unwrap();
 }
