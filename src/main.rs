@@ -66,7 +66,7 @@ fn main() {
     let (X1, Y1) = meshgrid::meshgrid(&x1, &x1);
     let u1 = X1.mapv(|x| apertures::rect_1d(x / (2.0 * w)))
         * Y1.mapv(|y| apertures::rect_1d(y / (2.0 * w)));
-    let mut u2 = propagation::prop_fresnel_impulse_response(&u1.into_dyn(), &l, &lam, &z);
+    let mut u2 = propagation::prop_fraunhofer(&u1.into_dyn(), &l, &lam, &z);
     u2.map_inplace(|a| nan_to_zero(a)); // Replace NaN with zeros
     let filename = String::from("output.txt");
     writer::write_to_file(&filename, &u2);
