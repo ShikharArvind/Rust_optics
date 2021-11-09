@@ -74,7 +74,7 @@ pub fn prop_fraunhofer(
     length: &f64,
     wavelength: &f64,
     propagation_distance: &f64,
-) -> Array2<Complex64> {
+) -> (Array2<Complex64>, f64) {
     // source to ArrayD type is not the best as this function is mainly for 2D, but this avoids cloning for fftshift, so not sure if its worth TODO
     //propagation - Fraunhofer propagation
     //assumes same x and y side lengths and
@@ -98,5 +98,5 @@ pub fn prop_fraunhofer(
         .mapv(|a| a.exp());
     let fft_f1 = ifftshift(&fftn(&fftshift(source)));
     let ft_u2 = c * fft_f1 * dx1.powi(2);
-    return ft_u2.into_dimensionality().unwrap();
+    return (ft_u2.into_dimensionality().unwrap(), l2);
 }
