@@ -71,25 +71,23 @@ fn main() {
     // let filename = String::from("output.txt");
     // writer::write_to_file(&filename, &u2);
 
-    // Diffraction Grating Fraunhofer 
-    let lam: f64 =  0.5e-6; //wavelength
-    let f : f64 = 0.5; //focal length
-    let p : f64 = 1e-4; //periodic grating
-    let D1 : f64 = 1.02e-3; //grating side length
-    let l :f64 = 1e-2; //array side length
+    // Diffraction Grating Fraunhofer
+    let lam: f64 = 0.5e-6; //wavelength
+    let f: f64 = 0.5; //focal length
+    let p: f64 = 1e-4; //grating period
+    let D1: f64 = 1.02e-3; //grating side length
+    let l: f64 = 1e-2; //array side length
     let m: f64 = 500.0;
     let dx: f64 = l / m;
     let x1 = Array::range(-l / 2.0, l / 2.0, dx);
-    let (X1, Y1) = meshgrid::meshgrid(&x1, &x1); 
+    let (X1, Y1) = meshgrid::meshgrid(&x1, &x1);
     let u1 = apertures::grating(&X1, &Y1, &D1, &p);
     let filename = String::from("grating.txt");
     writer::write_to_file(&filename, &u1);
-    let (mut u2, l2) = propagation::prop_fraunhofer(&(u1.into_dyn()), &l, &lam, &f);
+    let (mut u2, _l2) = propagation::prop_fraunhofer(&(u1.into_dyn()), &l, &lam, &f);
     u2.map_inplace(|a| nan_to_zero(a)); // Replace NaN with zeros
     let filename = String::from("output.txt");
     writer::write_to_file(&filename, &u2);
-
-
 }
 
 fn nan_to_zero(x: &mut Complex64) {
